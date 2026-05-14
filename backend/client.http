@@ -1,0 +1,25 @@
+### Obtener todos los topics
+GET http://localhost:5000/topics
+
+###
+POST http://localhost:5000/topics
+Content-Type: application/json
+
+{
+  "title": "Ejemplo de topic",
+  "description": "Descripción del topic de prueba"
+}
+
+###
+GET http://localhost:5000/topics/6a0599d510c537cc4f852e13
+###
+PUT http://localhost:5000/topics/6a0599d510c537cc4f852e13
+Content-Type: application/json
+
+{
+  "title": "Topic actualizado",
+  "description": "Descripción actualizada"
+}
+
+###
+DELETE http://localhost:5000/topics/6a0599d510c537cc4f852e13
