@@ -1,4 +1,4 @@
-const API_PATH = '/api/classes';
+const API_PATH = window.API_BASE_URL || '/api/classes';
 
 const statusEl = document.getElementById('status');
 const listEl = document.getElementById('topicList');
@@ -11,7 +11,7 @@ async function loadTopics() {
   try {
     const response = await fetch(API_PATH);
     if (!response.ok) {
-      throw new Error(`Error ${response.status}`);
+      throw new Error(Error ${response.status});
     }
 
     const topics = await response.json();
@@ -20,7 +20,7 @@ async function loadTopics() {
       return;
     }
 
-    statusEl.textContent = `Encontrados ${topics.length} topics`;
+    statusEl.textContent = Encontrados ${topics.length} topics;
     topics.forEach((topic) => {
       const item = document.createElement('li');
       item.innerHTML = `

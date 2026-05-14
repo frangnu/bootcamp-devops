@@ -41,11 +41,3 @@ PS C:\Users\frang\Documents\bootcamp-devops\backend> docker run -d --name topics
 05b47de8b1542a63ac6ef297aaf91d67d33cbdff7e2ed6caf7f9cbcfb1712a73
 PS C:\Users\frang\Documents\bootcamp-devops\backend> 
 
-
-PS C:\Users\frang\Documents\bootcamp-devops\backend> docker logs topics-api --tail 100
-
-> bootcamp-backend@1.0.0 start
-> node index.js
-
-Conectado a MongoDB: mongodb://lemoncode-mongo:27017/topics
-Servidor escuchando en http://localhost:5000
