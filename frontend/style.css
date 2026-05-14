@@ -1,0 +1,68 @@
+body {
+  font-family: Arial, sans-serif;
+  background: #f7f7f7;
+  margin: 0;
+  padding: 20px;
+}
+
+main {
+  max-width: 700px;
+  margin: 0 auto;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 0 12px rgba(0,0,0,0.08);
+  padding: 24px;
+}
+
+h1 {
+  margin-top: 0;
+}
+
+.controls {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+button {
+  border: none;
+  background: #007acc;
+  color: white;
+  padding: 10px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #005fa3;
+}
+
+#status {
+  color: #333;
+}
+
+.topic-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.topic-list li {
+  padding: 14px;
+  border-bottom: 1px solid #eee;
+}
+
+.topic-list li:last-child {
+  border-bottom: none;
+}
+
+.topic-title {
+  margin: 0 0 6px;
+  font-weight: bold;
+}
+
+.topic-description {
+  margin: 0;
+  color: #555;
+}

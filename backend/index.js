@@ -26,6 +26,11 @@ app.get('/topics', async (req, res) => {
   res.json(topics);
 });
 
+app.get('/api/classes', async (req, res) => {
+  const topics = await Topic.find().sort({ createdAt: -1 });
+  res.json(topics);
+});
+
 app.get('/topics/:id', async (req, res) => {
   try {
     const topic = await Topic.findById(req.params.id);
