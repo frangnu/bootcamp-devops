@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  database:
+    image: docker.io/library/mongo:7.0
+    container_name: topics-db
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - lemoncode-network
+    restart: always
+
+  backend:
+    build:
+      context: ./backend # Ajusta la ruta a tu carpeta backend si difiere
+      dockerfile: Dockerfile
+    container_name: topics-api
+    ports:
+      - "5000:5000"
+    environment:
+      - PORT=5000
+      - MONGO_URL=mongodb://topics-db:27017/topicsdb # Conexión interna usando el nombre del servicio
+    networks:
+      - lemoncode-network
+    depends_on:
+      database:
+        condition: service_started
+    restart: always
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: mi-frontend-topics
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - API_URL=http://localhost:5000 # Ruta que llamará el navegador del usuario hacia la API
+    networks:
+      - lemoncode-network
+    depends_on:
+      - backend
+    restart: always
+
+volumes:
+  mongo-data:
+    driver: local
+
+networks:
+  lemoncode-network:
+    driver: bridge
