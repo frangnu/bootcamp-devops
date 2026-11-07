@@ -1,17 +1,78 @@
-PS C:\Users\frang\Documents\bootcamp-devops> docker compose up -d
->> 
-time="2026-05-14T13:28:05+02:00" level=warning msg="C:\\Users\\frang\\Documents\\bootcamp-devops\\compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
-time="2026-05-14T13:28:05+02:00" level=warning msg="No services to build"
-[+] up 2/2
- ✔ Container topics-api         Created                                                                                  0.1s 
- ✔ Container mi-frontend-topics Created                                                                                  0.1s 
-PS C:\Users\frang\Documents\bootcamp-devops> docker compose ps
->> 
-time="2026-05-14T13:28:13+02:00" level=warning msg="C:\\Users\\frang\\Documents\\bootcamp-devops\\compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
-NAME                 IMAGE                         COMMAND                  SERVICE    CREATED              STATUS        PORTS
-mi-frontend-topics   bootcamp-devops-frontend      "docker-entrypoint.s…"   frontend   8 seconds ago        Up 1 second   0.0.0.0:3000->3000/tcp, [::]:3000->3000/tcp
-topics-api           bootcamp-devops-backend       "docker-entrypoint.s…"   backend    9 seconds ago        Up 1 second   0.0.0.0:5000->5000/tcp, [::]:5000->5000/tcp
-topics-db            docker.io/library/mongo:7.0   "docker-entrypoint.s…"   database   About a minute ago   Up 1 second   0.0.0.0:27017->27017/tcp, [::]:27017->27017/tcp
+# 1. Archivo compose.yml completo y documentado con comentarios
 
+```compose
+version: '3.8'
 
-![alt text](image.png)
+services:
+  database:
+    image: mongo:latest
+    container_name: topics-db
+    ports:
+      - "27017:27017"
+    environment:
+      # Mantenemos las credenciales que hicieron funcionar el contenedor en el reto 3
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=superpassword
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - lemoncode-network
+    restart: always
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: topics-api
+    ports:
+      - "5000:5000"
+    environment:
+      - PORT=5000
+      - HOST=0.0.0.0
+      # Corregido: Nombre correcto de variable (DATABASE_URL) y uso de credenciales
+      - DATABASE_URL=mongodb://admin:superpassword@topics-db:27017
+    networks:
+      - lemoncode-network
+    depends_on:
+      database:
+        condition: service_started
+    restart: always
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: mi-frontend-topics
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      # Corregido: Apunta al contenedor 'topics-api' por red de Docker como exige el reto
+      - API_URL=http://topics-api:5000/api/classes
+    networks:
+      - lemoncode-network
+    depends_on:
+      - backend
+    restart: always
+
+volumes:
+  mongo-data:
+    driver: local
+
+networks:
+  lemoncode-network:
+    driver: bridge
+
+```
+
+# 2. Comando docker-compose up ejecutándose exitosamente
+
+![Captura de pantalla](../Capturas/Screenshot_9.png)
+
+# 3. Captura de pantalla de todos los servicios corriendo (docker-compose ps)
+![Captura de pantalla](../Capturas/Screenshot_10.png)
+
+# 4. Captura de pantalla de la aplicación completa en http://localhost:3000
+
+![Captura de pantalla](../Capturas/Screenshot_11.png)
+

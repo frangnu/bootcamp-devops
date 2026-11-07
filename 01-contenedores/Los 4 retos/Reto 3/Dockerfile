@@ -1,18 +1,12 @@
-FROM docker.io/library/node:20-alpine
-
+FROM node:20-alpine AS deps
 WORKDIR /app
-
-# Copiar archivos de dependencias
 COPY package*.json ./
+RUN npm ci
 
-# Instalar dependencias de producción de forma limpia
-RUN npm ci --only=production
-
-# Copiar el resto del código fuente (incluyendo server.js)
+FROM node:20-alpine AS runtime
+WORKDIR /app
+ENV NODE_ENV=production
+COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-
-# Exponer el puerto en el que escucha tu servidor Express (ajústalo si usa otro)
 EXPOSE 3000
-
-# Comando para arrancar la aplicación
 CMD ["npm", "start"]

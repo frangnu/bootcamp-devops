@@ -1,9 +1,33 @@
-docker build -t topics-web:1.0 .
+# 1. Crear un Dockerfile para el frontend
+```dockerfile
+FROM node:20-alpine AS deps
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci
 
-docker run -d -p 3000:3000 --name mi-frontend-topics topics-web:1.0    
+FROM node:20-alpine AS runtime
+WORKDIR /app
+ENV NODE_ENV=production
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+EXPOSE 3000
+CMD ["npm", "start"]
+```
 
-PS C:\Users\frang\Documents\bootcamp-devops\frontend> docker inspect --format='{{range .Config.Env}}{{println .}}{{end}}' mi-frontend-topics
->> 
-PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-NODE_VERSION=20.20.2
-YARN_VERSION=1.22.22
+# 2. Construir la imagen del frontend
+
+```bash
+docker build -t mi-frontend-node:latest .
+```
+![Captura de pantalla](../Capturas/Screenshot_6.png)
+
+# 3. Ejecutar el frontend en un contenedor en la red Docker
+
+```bash
+docker run -d --name frontend-node --network lemoncode-network -e API_URL=http://topics-api:5000/api/classes -p 3000:3000 mi-frontend-node:latest
+```
+![Captura de pantalla](../Capturas/Screenshot_7.png)
+
+# 4. Configurar las variables de entorno para conectarse al backend en http://topics-api:5000/api/classes
+
+![Captura de pantalla](../Capturas/Screenshot_8.png)

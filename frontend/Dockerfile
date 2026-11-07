@@ -1,18 +1,10 @@
-FROM docker.io/library/node:20-alpine
+# Etapa 1: Servidor web ligero con Nginx
+FROM nginx:alpine
 
-WORKDIR /app
+# Copiamos todos los archivos estáticos de la carpeta local al directorio de Nginx
+COPY . /usr/share/nginx/html
 
-# Copiar archivos de dependencias
-COPY package*.json ./
+# Exponemos el puerto estándar de Nginx
+EXPOSE 80
 
-# Instalar dependencias de producción de forma limpia
-RUN npm ci --only=production
-
-# Copiar el resto del código fuente (incluyendo server.js)
-COPY . .
-
-# Exponer el puerto en el que escucha tu servidor Express (ajústalo si usa otro)
-EXPOSE 3000
-
-# Comando para arrancar la aplicación
-CMD ["npm", "start"]
+CMD ["nginx", "-g", "daemon off;"]
